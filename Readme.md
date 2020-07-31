@@ -1,6 +1,6 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
-* Студент: [Алексей Наумов](https://up.htmlacademy.ru/ecmascript/12/user/57563).
+* Студент:  [Алексей Наумов](https://up.htmlacademy.ru/ecmascript/12/user/57563).
 * Наставник: [Андрей Слесаренко](https://up.htmlacademy.ru/ecmascript/12/user/279781).
 
 ---
