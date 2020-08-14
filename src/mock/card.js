@@ -1,7 +1,8 @@
 import {getRandomInteger, getRandomArbitrary, humanizeReleaseDate} from "../utils.js";
+import {generateComment} from "./comment.js";
 
 const generateTitle = () => {
-  const title = [
+  const titles = [
     `The Dance of Life`,
     `Sagebrush Trail`,
     `The Man with the Golden Arm`,
@@ -13,13 +14,13 @@ const generateTitle = () => {
     `Made for Each Other`,
   ];
 
-  const randomIndex = getRandomInteger(0, title.length - 1);
+  const randomIndex = getRandomInteger(0, titles.length - 1);
 
-  return title[randomIndex];
+  return titles[randomIndex];
 };
 
 const generatePoster = () => {
-  const poster = [
+  const posters = [
     `./images/posters/the-dance-of-life.jpg`,
     `./images/posters/sagebrush-trail.jpg`,
     `./images/posters/the-man-with-the-golden-arm.jpg`,
@@ -31,9 +32,9 @@ const generatePoster = () => {
     `./images/posters/made-for-each-other.png`
   ];
 
-  const randomIndex = getRandomInteger(0, poster.length - 1);
+  const randomIndex = getRandomInteger(0, posters.length - 1);
 
-  return poster[randomIndex];
+  return posters[randomIndex];
 };
 
 const generateRating = () => {
@@ -58,11 +59,16 @@ const generateDuration = () => {
 };
 
 const generateGenre = () => {
-  const genre = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`];
+  const genres = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`, `Film-Noir`];
 
-  const randomIndex = getRandomInteger(0, genre.length - 1);
+  const randomCount = getRandomInteger(1, 3);
+  const genreList = new Set();
 
-  return genre[randomIndex];
+  while (genreList.size < randomCount) {
+    genreList.add(genres[getRandomInteger(0, genres.length - 1)]);
+  }
+
+  return [...genreList];
 };
 
 
@@ -92,49 +98,58 @@ const generateDescription = () => {
   return [...description].join(` `);
 };
 
-const generateCountComments = () => {
-  return getRandomInteger(0, 5);
+const generateCountry = () => {
+  const countrys = [`USA`, `Germany`, `Australia`, `England`, `France`];
+
+  const randomIndex = getRandomInteger(0, countrys.length - 1);
+
+  return countrys[randomIndex];
 };
 
-// const comment = {
-//   emoji: [
-//     `./images/emoji/smile.png`,
-//     `./images/emoji/sleeping.png`,
-//     `./images/emoji/puke.png`,
-//     `./images/emoji/angry.png`,
-//   ],
-//   text: [
-//     `Interesting setting and a good cast`,
-//     `Booooooooooring`,
-//     `Very very old. Meh`,
-//     `Almost two hours? Seriously?`,
-//     `Good movie!`,
-//   ],
-//   info: {
-//     author: [
-//       `John Doe`,
-//       `Tim Macoveev`,
-//     ],
-//     day: [
-//       `2019/12/31 23:59`,
-//       `2 days ago`,
-//       `Today`,
-//     ],
-//   }
-// };
+const generateAgeRating = () => {
+  const ratingList = [`0+`, `6+`, `12+`, `16+`, `18+`];
+
+  const randomIndex = getRandomInteger(0, ratingList.length - 1);
+
+  return ratingList[randomIndex];
+};
+
+const generateNames = (maxCount = 1) => {
+  const nameList = [`Anthony Mann`, `Anne Wigton`, `Heinz Herald`, `Richard Weil`, `Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`];
+  const countNames = maxCount === 1 ? maxCount : getRandomInteger(1, maxCount);
+  const names = new Set();
+
+  while (names.size < countNames) {
+    const randomIndex = getRandomInteger(0, nameList.length - 1);
+    names.add(nameList[randomIndex]);
+  }
+
+  return [...names];
+};
 
 export const generateFilm = () => {
   const newDate = generateRandomDate();
+  const comments = [];
+  const commentsCount = getRandomInteger(1, 5);
+
+  for (let i = 0; i < commentsCount; i++) {
+    comments.push(generateComment());
+  }
 
   return {
     title: generateTitle(),
     poster: generatePoster(),
     rating: generateRating(),
     release: humanizeReleaseDate(newDate),
-    year: generateRandomDate(),
+    year: newDate,
     duration: generateDuration(),
-    genre: generateGenre(),
+    genres: generateGenre(),
     description: generateDescription(),
-    comments: generateCountComments(),
+    country: generateCountry(),
+    ageRating: generateAgeRating(),
+    director: generateNames(),
+    writers: generateNames(3),
+    actors: generateNames(3),
+    comments,
   };
 };

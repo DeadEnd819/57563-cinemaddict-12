@@ -17,7 +17,7 @@ export const humanizeReleaseDate = (releaseDate) => {
   ].join(` `);
 };
 
-export const sortFilms = (films, element) => {
+export const sortElements = (films, element) => {
   films.sort(function (a, b) {
     if (a[element] < b[element]) {
       return 1;
