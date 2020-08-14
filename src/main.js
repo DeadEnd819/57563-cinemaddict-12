@@ -123,7 +123,7 @@ const siteFilmsElement = document.querySelector(`.films`);
 const onClickCreatePopup = (evt) => {
   if (evt.target.classList.contains(`film-card__poster`)) {
     const id = evt.target.closest(`.film-card`).dataset.id;
-    const film = listFilms.slice().filter((element) => element.id === id);
+    const film = dataFilms.slice().filter((element) => element.id === id);
 
     render(siteFooterElement, createPopupTemplate(film), `afterend`);
     siteBodyElement.classList.toggle(`hide-overflow`);
