@@ -1,29 +1,26 @@
 import {humanizeReleaseDate} from "../utils.js";
 
-export const createPopupTemplate = (film) => {
-  const [{poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments}] = film;
+const createGenreTemplate = (genres) => {
+  let genreList = [];
+  for (const genre of genres) {
+    genreList.push(`<span class="film-details__genre">${genre}</span>`);
+  }
 
-  const createGenreTemplate = () => {
-    let genreList = [];
-    for (const genre of genres) {
-      genreList.push(`<span class="film-details__genre">${genre}</span>`);
-    }
-
-    return `<td class="film-details__term">${genreList.length === 1 ? `Genre` : `Genres`}</td>
+  return `<td class="film-details__term">${genreList.length === 1 ? `Genre` : `Genres`}</td>
             <td class="film-details__cell">${genreList.join(``)}</td>`;
-  };
+};
 
-  const createCommentsTemplate = () => {
-    let commentsList = [];
-    for (const comment of comments) {
-      const alternativeTextEmoji = comment.emoji.replace(/[^A-Za-z]/g, ``)
-        .replace(/imagesemoji/gi, ``)
-        .replace(/png/gi, ``);
+const createCommentsTemplate = (comments) => {
+  let commentsList = [];
+  for (const comment of comments) {
+    const alternativeTextEmoji = comment.emoji.replace(/[^A-Za-z]/g, ``)
+      .replace(/imagesemoji/gi, ``)
+      .replace(/png/gi, ``);
 
-      const day = comment.day;
-      const timeComment = day.getFullYear() + `/` + day.getMonth() + `/` + day.getDate() + ` ` + day.getHours() + `:` + day.getMinutes();
+    const day = comment.day;
+    const timeComment = day.getFullYear() + `/` + day.getMonth() + `/` + day.getDate() + ` ` + day.getHours() + `:` + day.getMinutes();
 
-      commentsList.push(`<li class="film-details__comment">
+    commentsList.push(`<li class="film-details__comment">
               <span class="film-details__comment-emoji">
                 <img src="${comment.emoji}" width="55" height="55" alt="emoji-${alternativeTextEmoji}">
               </span>
@@ -36,10 +33,14 @@ export const createPopupTemplate = (film) => {
                 </p>
               </div>
             </li>`);
-    }
+  }
 
-    return commentsList.join(``);
-  };
+  return commentsList.join(``);
+};
+
+export const createPopupTemplate = (film) => {
+  const [{poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments}] = film;
+  const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
 
   return `<section class="film-details">
             <form class="film-details__inner" action="" method="get">
@@ -85,13 +86,13 @@ export const createPopupTemplate = (film) => {
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Runtime</td>
-                        <td class="film-details__cell">${duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`}</td>
+                        <td class="film-details__cell">${filmDuration}</td>
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Country</td>
                         <td class="film-details__cell">${country}</td>
                       </tr>
-                      <tr class="film-details__row">${createGenreTemplate()}</tr>
+                      <tr class="film-details__row">${createGenreTemplate(genres)}</tr>
                     </table>
 
                     <p class="film-details__film-description">
@@ -116,7 +117,7 @@ export const createPopupTemplate = (film) => {
                 <section class="film-details__comments-wrap">
                   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
 
-                  <ul class="film-details__comments-list">${createCommentsTemplate()}</ul>
+                  <ul class="film-details__comments-list">${createCommentsTemplate(comments)}</ul>
 
                   <div class="film-details__new-comment">
                     <div for="add-emoji" class="film-details__add-emoji-label"></div>

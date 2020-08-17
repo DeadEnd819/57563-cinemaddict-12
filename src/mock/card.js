@@ -1,6 +1,8 @@
 import {getRandomInteger, getRandomArbitrary, humanizeReleaseDate} from "../utils.js";
 import {generateComment} from "./comment.js";
 
+let filmId = 0;
+
 const generateTitle = () => {
   const titles = [
     `The Dance of Life`,
@@ -151,5 +153,9 @@ export const generateFilm = () => {
     writers: generateNames(3),
     actors: generateNames(3),
     comments,
+    watchlist: Boolean(getRandomInteger(0, 1)),
+    history: Boolean(getRandomInteger(0, 1)),
+    favorites: Boolean(getRandomInteger(0, 1)),
+    id: `film_` + filmId++,
   };
 };

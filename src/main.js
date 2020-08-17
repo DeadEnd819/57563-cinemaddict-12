@@ -9,19 +9,12 @@ import {createNoDataTemplate} from "./view/no-data.js";
 import {createPopupTemplate} from "./view/popup.js";
 import {generateFilm} from "./mock/card.js";
 import {filterByWatch, filterByHistory, filterByFavorites} from "./filter.js";
-import {sortElements, getRandomInteger} from "./utils.js";
+import {sortElements} from "./utils.js";
 
 const FILM_CARD_COUNT = 5;
 const FILM_COUNT = 20;
 
 export const dataFilms = new Array(FILM_COUNT).fill().map(generateFilm);
-
-for (let i = 0; i < dataFilms.length; i++) {
-  dataFilms[i].id = `film_` + i;
-  dataFilms[i].watchlist = Boolean(getRandomInteger(0, 1));
-  dataFilms[i].history = Boolean(getRandomInteger(0, 1));
-  dataFilms[i].favorites = Boolean(getRandomInteger(0, 1));
-}
 
 export let listFilms = dataFilms;
 let watchList = filterByWatch();
@@ -170,14 +163,13 @@ const sortClickHandler = (evt) => {
 
   switch (target.textContent) {
     case `Sort by default`:
-      sortsFilms(target);
-      break;
+      return sortsFilms(target);
     case `Sort by date`:
-      sortsFilms(target, `year`);
-      break;
+      return sortsFilms(target, `year`);
     case `Sort by rating`:
-      sortsFilms(target, `rating`);
-      break;
+      return sortsFilms(target, `rating`);
+    default:
+      return null;
   }
 };
 
@@ -185,8 +177,9 @@ const siteSortElement = siteMainElement.querySelector(`.sort`);
 
 siteSortElement.addEventListener(`click`, sortClickHandler);
 
-const filtersFilms = (target) => {
+const filtersFilms = (target, list) => {
   if (!target.classList.contains(`main-navigation__item--active`)) {
+    listFilms = list;
     const activeFilter = siteMainElement.querySelector(`.main-navigation`).querySelector(`.main-navigation__item--active`);
 
     activeFilter.classList.remove(`main-navigation__item--active`);
@@ -216,21 +209,15 @@ const filterClickHandler = (evt) => {
 
   switch (href) {
     case `#all`:
-      listFilms = dataFilms;
-      filtersFilms(target);
-      break;
+      return filtersFilms(target, dataFilms);
     case `#watchlist`:
-      listFilms = watchList;
-      filtersFilms(target);
-      break;
+      return filtersFilms(target, watchList);
     case `#history`:
-      listFilms = historyList;
-      filtersFilms(target);
-      break;
+      return filtersFilms(target, historyList);
     case `#favorites`:
-      listFilms = favoritesList;
-      filtersFilms(target);
-      break;
+      return filtersFilms(target, favoritesList);
+    default:
+      return null;
   }
 };
 
