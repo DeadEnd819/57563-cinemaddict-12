@@ -1,15 +1,16 @@
-import {createUserRankTemplate} from "./view/user-rank.js";
-import {createFilterMenuTemplate} from "./view/filter-menu.js";
-import {createSortMenuTemplate} from "./view/sort-menu.js";
-import {createSectionFilmsTemplate} from "./view/films.js";
-import {createFilmCardTemplate} from "./view/card.js";
-import {createButtonTemplate} from "./view/button.js";
-import {createFooterStatisticsTemplate} from "./view/statistics.js";
-import {createNoDataTemplate} from "./view/no-data.js";
-import {createPopupTemplate} from "./view/popup.js";
-import {generateFilm} from "./mock/card.js";
-import {filterByWatch, filterByHistory, filterByFavorites} from "./filter.js";
+import {renderElement, RenderPosition} from "./utils.js";
 import {sortElements} from "./utils.js";
+import {filterByWatch, filterByHistory, filterByFavorites} from "./filter.js";
+import UserRankView from "./view/user-rank.js";
+import FilterMenuView from "./view/filter-menu.js";
+import SortMenuView from "./view/sort-menu.js";
+import SectionFilmsView from "./view/films.js";
+import FilmCardView from "./view/card.js";
+import ButtonView from "./view/button.js";
+import FooterStatisticsView from "./view/statistics.js";
+import NoDataView from "./view/no-data.js";
+import PopupView from "./view/popup.js";
+import {generateFilm} from "./mock/card.js";
 
 const FILM_CARD_COUNT = 5;
 const FILM_COUNT = 20;
@@ -21,22 +22,20 @@ let watchList = filterByWatch();
 let historyList = filterByHistory();
 let favoritesList = filterByFavorites();
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const sectionFilmsComponent = new SectionFilmsView();
 
 const siteHeaderElement = document.querySelector(`.header`);
 
-render(siteHeaderElement, createUserRankTemplate(), `beforeend`);
+renderElement(siteHeaderElement, new UserRankView().getElement(), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.main`);
 
-render(siteMainElement, createFilterMenuTemplate(), `afterbegin`);
-render(siteMainElement, createSortMenuTemplate(), `beforeend`);
+renderElement(siteMainElement, new FilterMenuView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new SortMenuView().getElement(), RenderPosition.BEFOREEND);
 
 const siteFooterStatisticsElement = document.querySelector(`.footer__statistics`);
 
-render(siteFooterStatisticsElement, createFooterStatisticsTemplate(), `beforeend`);
+renderElement(siteFooterStatisticsElement, new FooterStatisticsView().getElement(), RenderPosition.BEFOREEND);
 
 const createCardFilmsExtra = () => {
   const filmsTopRated = sortElements(dataFilms.slice(), `rating`).slice(0, 2);
@@ -45,20 +44,20 @@ const createCardFilmsExtra = () => {
   const siteFilmTopRatedElement = siteFilmExtraCardElements[0].lastElementChild;
 
   for (const film of filmsTopRated) {
-    render(siteFilmTopRatedElement, createFilmCardTemplate(film), `beforeend`);
+    renderElement(siteFilmTopRatedElement, new FilmCardView(film).getElement(), RenderPosition.BEFOREEND);
   }
 
   const siteFilmMostCommentedElement = siteFilmExtraCardElements[1].lastElementChild;
 
   for (const film of filmsMostCommented) {
-    render(siteFilmMostCommentedElement, createFilmCardTemplate(film), `beforeend`);
+    renderElement(siteFilmMostCommentedElement, new FilmCardView(film).getElement(), RenderPosition.BEFOREEND);
   }
 };
 
 const createCardFilms = () => {
   const siteFilmCardElement = siteMainElement.querySelector(`.films-list`).querySelector(`.films-list__container`);
   for (let i = 0; i < FILM_CARD_COUNT; i++) {
-    render(siteFilmCardElement, createFilmCardTemplate(listFilms[i]), `beforeend`);
+    renderElement(siteFilmCardElement, new FilmCardView(listFilms[i]).getElement(), RenderPosition.BEFOREEND);
   }
 
   if (listFilms.length > FILM_CARD_COUNT) {
@@ -66,7 +65,7 @@ const createCardFilms = () => {
 
     const siteFilmListElement = siteMainElement.querySelector(`.films-list`);
 
-    render(siteFilmListElement, createButtonTemplate(), `beforeend`);
+    renderElement(siteFilmListElement, new ButtonView().getElement(), RenderPosition.BEFOREEND);
 
     const loadMoreButton = siteFilmListElement.querySelector(`.films-list__show-more`);
 
@@ -74,7 +73,7 @@ const createCardFilms = () => {
       evt.preventDefault();
       listFilms
         .slice(renderedFilmsCount, renderedFilmsCount + FILM_CARD_COUNT)
-        .forEach((film) => render(siteFilmCardElement, createFilmCardTemplate(film), `beforeend`));
+        .forEach((film) => renderElement(siteFilmCardElement, new FilmCardView(film).getElement(), RenderPosition.BEFOREEND));
 
       renderedFilmsCount += FILM_CARD_COUNT;
 
@@ -101,12 +100,12 @@ const removeCardFilms = () => {
   }
 };
 
-if (listFilms) {
-  render(siteMainElement, createSectionFilmsTemplate(), `beforeend`);
+if (listFilms.length) {
+  renderElement(siteMainElement, sectionFilmsComponent.getElement(), RenderPosition.BEFOREEND);
   createCardFilmsExtra();
   createCardFilms();
 } else {
-  render(siteMainElement, createNoDataTemplate(), `beforeend`);
+  renderElement(siteMainElement, new NoDataView().getElement(), RenderPosition.BEFOREEND);
 }
 
 const siteFooterElement = document.querySelector(`.footer`);
@@ -118,7 +117,7 @@ const onClickCreatePopup = (evt) => {
     const id = evt.target.closest(`.film-card`).dataset.id;
     const film = dataFilms.slice().filter((element) => element.id === id);
 
-    render(siteFooterElement, createPopupTemplate(film), `afterend`);
+    renderElement(siteFooterElement, new PopupView(film).getElement(), RenderPosition.AFTERBEGIN);
     siteBodyElement.classList.toggle(`hide-overflow`);
 
     const sitePopupCloseButtonElement = document.querySelector(`.film-details__close-btn`);
@@ -148,11 +147,13 @@ const sortsFilms = (target, element) => {
     activeSorting.classList.remove(`sort__button--active`);
     target.classList.add(`sort__button--active`);
 
-    removeCardFilms();
+    if (listFilms.length) {
+      removeCardFilms();
 
-    listFilms = element ? sortElements(listFilms.slice(), element) : dataFilms;
+      listFilms = element ? sortElements(listFilms.slice(), element) : dataFilms;
 
-    createCardFilms();
+      createCardFilms();
+    }
   }
 };
 
@@ -195,8 +196,10 @@ const filtersFilms = (target, list) => {
       }
     }
 
-    removeCardFilms();
-    createCardFilms();
+    if (listFilms.length) {
+      removeCardFilms();
+      createCardFilms();
+    }
   }
 };
 

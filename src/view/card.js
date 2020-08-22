@@ -1,6 +1,8 @@
+import {createElement} from "../utils.js";
+
 const DESCRIPTION_TEXT_LENGTH = 140;
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {poster, title, rating, year, duration, genres, description, comments, id} = film;
   const filmYear = year.toLocaleString(`en-US`, {year: `numeric`});
   const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
@@ -27,3 +29,26 @@ export const createFilmCardTemplate = (film) => {
      </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
