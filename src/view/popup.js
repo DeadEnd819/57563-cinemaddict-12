@@ -1,4 +1,5 @@
 import {humanizeReleaseDate} from "../utils.js";
+import {createElement} from "../utils.js";
 
 const createGenreTemplate = (genres) => {
   let genreList = [];
@@ -38,7 +39,7 @@ const createCommentsTemplate = (comments) => {
   return commentsList.join(``);
 };
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const [{poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments}] = film;
   const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
 
@@ -153,3 +154,26 @@ export const createPopupTemplate = (film) => {
             </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
