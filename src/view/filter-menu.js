@@ -1,5 +1,5 @@
-import {filterByWatch, filterByHistory, filterByFavorites} from "../filter.js";
-import {createElement} from "../utils.js";
+import {filterByWatch, filterByHistory, filterByFavorites} from "../utils/filter.js";
+import AbstractView from "./abstract.js";
 
 const createFilterMenuTemplate = () => {
   return (
@@ -15,24 +15,28 @@ const createFilterMenuTemplate = () => {
   );
 };
 
-export default class FilterMenu {
+export default class FilterMenu extends AbstractView {
   constructor() {
-    this._element = null;
-  }
+    super();
 
+    this._clickHandler = this._clickHandler.bind(this);
+  }
   getTemplate() {
     return createFilterMenuTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener(`click`, this._clickHandler);
+  }
+
+  removeClickHandler() {
+    this.getElement().removeEventListener(`click`, this._clickHandler);
+    this._callback = {};
   }
 }

@@ -1,5 +1,5 @@
-import {humanizeReleaseDate} from "../utils.js";
-import {createElement} from "../utils.js";
+import {humanizeReleaseDate} from "../utils/common.js";
+import AbstractView from "./abstract.js";
 
 const createGenreTemplate = (genres) => {
   let genreList = [];
@@ -155,25 +155,30 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(film) {
+    super();
+
     this._film = film;
-    this._element = null;
+    this._mouseDownHandler = this._mouseDownHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _mouseDownHandler(evt) {
+    evt.preventDefault();
+    this._callback.closePopup(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setMouseDownHandler(callback) {
+    this._callback.closePopup = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`mousedown`, this._mouseDownHandler);
+  }
+
+  removeMouseDownHandler() {
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`mousedown`, this._mouseDownHandler);
+    this._callback = {};
   }
 }

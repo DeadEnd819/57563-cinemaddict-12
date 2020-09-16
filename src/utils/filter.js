@@ -1,4 +1,4 @@
-import {dataFilms} from "./main.js";
+import {dataFilms} from "../main.js";
 
 export const filterByWatch = () => dataFilms.slice().filter((film) => film.watchlist);
 export const filterByHistory = () => dataFilms.slice().filter((film) => film.history);
