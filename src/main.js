@@ -1,5 +1,5 @@
 import UserRankView from "./view/user-rank.js";
-import FooterStatisticsView from "./view/statistics.js";
+import FooterStatisticsView from "./view/footer-statistics.js";
 import MovieListPresenter from "./presenter/films-list.js";
 import {generateFilm} from "./mock/card.js";
 import {render, RenderPosition} from "./utils/render.js";
