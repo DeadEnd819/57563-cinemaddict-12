@@ -22,6 +22,7 @@ export default class FilterMenu extends AbstractView {
     this._films = films;
     this._clickHandler = this._clickHandler.bind(this);
   }
+
   getTemplate() {
     return createFilterMenuTemplate(this._films);
   }
