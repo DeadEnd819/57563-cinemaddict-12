@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArbitrary, humanizeReleaseDate} from "../utils.js";
+import {getRandomInteger, getRandomArbitrary, humanizeReleaseDate} from "../utils/common.js";
 import {generateComment} from "./comment.js";
 
 let filmId = 0;

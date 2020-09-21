@@ -1,9 +1,9 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 const DESCRIPTION_TEXT_LENGTH = 140;
 
 const createFilmCardTemplate = (film) => {
-  const {poster, title, rating, year, duration, genres, description, comments, id} = film;
+  const {poster, title, rating, year, duration, genres, description, comments, watchlist, history, favorites, id} = film;
   const filmYear = year.toLocaleString(`en-US`, {year: `numeric`});
   const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
   const filmGenres = genres.slice(0, 1);
@@ -22,33 +22,21 @@ const createFilmCardTemplate = (film) => {
         <p class="film-card__description">${filmDescription}</p>
         <a class="film-card__comments">${comments.length} comments</a>
         <form class="film-card__controls">
-          <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-          <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-          <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+          <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
+          <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${history ? `film-card__controls-item--active` : ``}">Mark as watched</button>
+          <button class="film-card__controls-item button film-card__controls-item--favorite ${favorites ? `film-card__controls-item--active` : ``}">Mark as favorite</button>
         </form>
      </article>`
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
