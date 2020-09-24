@@ -7,6 +7,7 @@ import StatisticsView from "../view/statistics.js";
 import ButtonView from "../view/button.js";
 import {filter} from "../utils/filter.js";
 import {render, remove, RenderPosition} from "../utils/render.js";
+import {FilterType} from "../utils/const.js";
 import {sortElements} from "../utils/sort.js";
 import FilmPresenter from "../presenter/film.js";
 
@@ -93,11 +94,7 @@ export default class MovieList {
     if (!target.classList.contains(`main-navigation__item--active`)) {
       this._filterListFilms = list !== `all` ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
       this._listFilms = this._filterListFilms;
-      const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
-
-      activeFilterButton.classList.remove(`main-navigation__item--active`);
-      target.classList.add(`main-navigation__item--active`);
-
+      this._filterMenuComponent.update(this._activeFilterFilms);
       const sortButtons = this._sortMenuComponent.getElement().querySelectorAll(`a`);
 
       for (const button of sortButtons) {
@@ -163,9 +160,7 @@ export default class MovieList {
   _addFilmToList(target, list) {
     const id = target.tagName === `BUTTON` ? target.closest(`.film-card`).dataset.id : target.closest(`.film-details`).dataset.id;
     const index = this._sourcedlistFilms.findIndex((element) => element.id === id);
-    console.log(`---------------`);
-    console.log(this._listFilms.length);
-    console.log(Object.keys(this._filmPresenter).length);
+
     this._filmPresenter[id].getCardComponent().setFilmButtonActive(list);
 
     if (this._filmPresenter[id].getPopupComponent()) {
@@ -185,17 +180,7 @@ export default class MovieList {
       this._renderProfileRating();
     }
 
-    const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
-    const filterNavigation = this._filterMenuComponent.getElement().querySelectorAll(`.main-navigation__item`);
-
-    for (const item of filterNavigation) {
-      if (item.getAttribute(`href`) === this._activeFilterFilms) {
-        if (!item.classList.contains(`.main-navigation__item--active`)) {
-          activeFilterButton.classList.remove(`main-navigation__item--active`);
-          item.classList.add(`main-navigation__item--active`);
-        }
-      }
-    }
+    this._filterMenuComponent.update(this._activeFilterFilms);
 
     if (this._activeFilterFilms.replace(/^#/, ``) === list) {
       this._filterListFilms = list !== `all` ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
@@ -218,10 +203,6 @@ export default class MovieList {
       this._removeCardFilms();
       this._renderNoData();
     }
-    console.log(`================`);
-    console.log(this._listFilms.length);
-    console.log(Object.keys(this._filmPresenter).length);
-    console.log(`---------------`);
   }
 
   _onClickAddToList(evt) {
@@ -328,7 +309,7 @@ export default class MovieList {
   _renderCards(container, from, to) {
     this._listFilms
       .slice(from, to)
-      .forEach((film) => this._renderCard(film, container,));
+      .forEach((film) => this._renderCard(film, container));
   }
 
   _createCardFilmsExtra() {
