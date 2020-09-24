@@ -40,10 +40,10 @@ const createCommentsTemplate = (comments) => {
 };
 
 const createPopupTemplate = (film) => {
-  const [{poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments}] = film;
+  const {poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments, watchlist, history, favorites, id} = film;
   const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
 
-  return `<section class="film-details">
+  return `<section class="film-details" data-id="${id}">
             <form class="film-details__inner" action="" method="get">
               <div class="form-details__top-container">
                 <div class="film-details__close">
@@ -103,14 +103,14 @@ const createPopupTemplate = (film) => {
                 </div>
 
                 <section class="film-details__controls">
-                  <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-                  <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+                  <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" data-list-checkbox ="watchlist" ${watchlist ? `checked` : ``}>
+                  <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist" data-list="watchlist">Add to watchlist</label>
 
-                  <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
-                  <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+                  <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" data-list-checkbox ="history" ${history ? `checked` : ``}>
+                  <label for="watched" class="film-details__control-label film-details__control-label--watched" data-list="history">Already watched</label>
 
-                  <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
-                  <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+                  <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" data-list-checkbox ="favorites" ${favorites ? `checked` : ``}>
+                  <label for="favorite" class="film-details__control-label film-details__control-label--favorite" data-list="favorites">Add to favorites</label>
                 </section>
               </div>
 
@@ -161,6 +161,12 @@ export default class Popup extends AbstractView {
 
     this._film = film;
     this._mouseDownHandler = this._mouseDownHandler.bind(this);
+    this._addToListHandler = this._addToListHandler.bind(this);
+  }
+
+  setFilmButtonActive(list) {
+    const btn = this.getElement().querySelector(`[data-list-checkbox="${list}"]`);
+    btn.checked = !btn.checked;
   }
 
   getTemplate() {
@@ -180,5 +186,20 @@ export default class Popup extends AbstractView {
   removeMouseDownHandler() {
     this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`mousedown`, this._mouseDownHandler);
     this._callback = {};
+  }
+
+  _addToListHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToList(evt);
+  }
+
+  setAddToListHandler(callback) {
+    this._callback.addToList = callback;
+    this.getElement().querySelector(`.film-details__controls`).addEventListener(`click`, this._addToListHandler);
+  }
+
+  removeAddToListHandler() {
+    this.getElement().querySelector(`.film-details__controls`).removeEventListener(`click`, this._addToListHandler);
+    this._callback.addToList = null;
   }
 }
