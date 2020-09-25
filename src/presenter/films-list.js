@@ -8,16 +8,14 @@ import StatisticsView from "../view/statistics.js";
 import ButtonView from "../view/button.js";
 import {filter} from "../utils/filter.js";
 import {render, remove, RenderPosition} from "../utils/render.js";
-import {FILM_CARD_COUNT, Containers, SortType, FilterType, STATISTICS_BUTTON} from "../utils/const.js";
+import {FILM_CARD_COUNT, Containers, SortType, FilterType} from "../utils/const.js";
 import {sortElements} from "../utils/sort.js";
 import FilmPresenter from "../presenter/film.js";
 
 export default class MovieList {
-  constructor(headContainer, mainContainer, footerContainer, bodyContainer) {
+  constructor(headContainer, mainContainer) {
     this._head = headContainer;
     this._container = mainContainer;
-    this._footer = footerContainer;
-    this._body = bodyContainer;
     this._renderedFilmsCount = FILM_CARD_COUNT;
     this._mainFilmPresenters = {};
     this._filmPresenters = {};
@@ -36,7 +34,6 @@ export default class MovieList {
     this._sortClickHandler = this._sortClickHandler.bind(this);
     this._filterClickHandler = this._filterClickHandler.bind(this);
     this._statisticsButtonClickHandler = this._statisticsButtonClickHandler.bind(this);
-    // this._onClickAddToList = this._onClickAddToList.bind(this);
   }
 
   init(films) {
@@ -200,10 +197,10 @@ export default class MovieList {
       this._statisticsComponent = new StatisticsView();
       this._renderStatistics();
 
-      // const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
-      //
-      // activeFilterButton.classList.remove(`main-navigation__item--active`);
-      // this._filterMenuComponent.getElement().querySelector(`.main-navigation__additional`).classList.add(`main-navigation__item--active`);
+      const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
+
+      activeFilterButton.classList.remove(`main-navigation__item--active`);
+      this._filterMenuComponent.getElement().querySelector(`.main-navigation__additional`).classList.add(`main-navigation__item--active`);
     }
   }
 
@@ -273,12 +270,12 @@ export default class MovieList {
     }
   }
 
-  _removeExtraCardFilms() {
-    Object
-      .values(this._filmPresenters)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenters = {};
-  }
+  // _removeExtraCardFilms() {
+  //   Object
+  //     .values(this._filmPresenters)
+  //     .forEach((presenter) => presenter.destroy());
+  //   this._filmPresenters = {};
+  // }
 
   _createTopCardFilms() {
     const container = this._sectionFilmsComponent.getElement()
