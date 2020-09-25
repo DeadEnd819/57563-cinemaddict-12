@@ -158,4 +158,32 @@ export const generateFilm = () => {
     favorites: Boolean(getRandomInteger(0, 1)),
     id: `film_` + filmId++,
   };
+
+  // return {
+  //   "id": `film_` + filmId++,
+  //   comments,
+  //   "film_info": {
+  //     "title":  generateTitle(),
+  //     "alternative_title":  generateTitle(),
+  //     "total_rating": generateRating(),
+  //     "poster": generatePoster(),
+  //     "age_rating": generateAgeRating(),
+  //     "director": generateNames(),
+  //     "writers":  generateNames(3),
+  //     "actors":  generateNames(3),
+  //     "release": {
+  //       "date": humanizeReleaseDate(newDate),
+  //       "release_country": generateCountry(),
+  //     },
+  //     "runtime": generateDuration(),
+  //     "genre": generateGenre(),
+  //     "description": generateDescription(),
+  //   },
+  //   "user_details": {
+  //     "watchlist": Boolean(getRandomInteger(0, 1)),
+  //     "already_watched": Boolean(getRandomInteger(0, 1)),
+  //     "watching_date": newDate,
+  //     "favorite": Boolean(getRandomInteger(0, 1)),
+  //   }
+  // };
 };

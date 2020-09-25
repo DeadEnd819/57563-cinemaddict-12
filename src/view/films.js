@@ -1,4 +1,5 @@
 import AbstractView from "./abstract.js";
+import {Containers} from "../utils/const.js";
 
 const createSectionFilmsTemplate = () => {
   return (
@@ -6,21 +7,21 @@ const createSectionFilmsTemplate = () => {
       <section class="films-list">
         <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
 
-        <div class="films-list__container"  data-type-container="main">
+        <div class="films-list__container"  data-type-container="${Containers.MAIN}">
         </div>
       </section>
 
       <section class="films-list--extra">
         <h2 class="films-list__title">Top rated</h2>
 
-        <div class="films-list__container"  data-type-container="rated">
+        <div class="films-list__container"  data-type-container="${Containers.TOP}">
         </div>
       </section>
 
       <section class="films-list--extra">
         <h2 class="films-list__title">Most commented</h2>
 
-        <div class="films-list__container"  data-type-container="commented">
+        <div class="films-list__container"  data-type-container="${Containers.COMMENTED}">
         </div>
       </section>
     </section>`

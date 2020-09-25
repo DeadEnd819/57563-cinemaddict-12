@@ -55,7 +55,7 @@ export default class FilterMenu extends AbstractView {
           activeFilterButton.classList.remove(`main-navigation__item--active`);
           item.classList.add(`main-navigation__item--active`);
         }
-        return;
+        break;
       }
     }
   }
