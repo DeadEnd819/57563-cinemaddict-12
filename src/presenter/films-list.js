@@ -39,8 +39,7 @@ export default class MovieList {
   init(films) {
     this._sourcedlistFilms = films.slice();
     this._listFilms = films.slice();
-    this._filterListFilms = films.slice();
-    this._activeFilterFilms = `#all`;
+    this._activeFilterFilms = FilterType.ALL;
     this._activeSortFilm = SortType.DEFAULT;
 
     this._renderProfileRating();
@@ -69,9 +68,7 @@ export default class MovieList {
     //   this._renderListFilms();
     // }
 
-    this._filterListFilms = list !== FilterType.ALL ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
-    this._listFilms = this._filterListFilms;
-
+    this._listFilms = list !== FilterType.ALL ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
     this._sortMenuComponent.resetActiveButton();
 
     if (this._listFilms.length) {
@@ -107,7 +104,7 @@ export default class MovieList {
 
   _sortsFilms(activeSort) {
     this._removeMainCardFilms();
-    this._listFilms = activeSort !== SortType.DEFAULT ? sortElements(this._filterListFilms.slice(), activeSort) : this._filterListFilms;
+    this._listFilms = activeSort !== SortType.DEFAULT ? sortElements(this._listFilms.slice(), activeSort) : this._listFilms;
     this._createMainCardFilms();
   }
 

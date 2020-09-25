@@ -86,62 +86,62 @@ export default class MovieList {
   //   }
   // }
 
-  _filtersFilms(target, list) {
-    if (this._statisticsComponent) {
-      this._renderListFilms();
-    }
-
-    if (!target.classList.contains(`main-navigation__item--active`)) {
-      this._filterListFilms = list !== `all` ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
-      this._listFilms = this._filterListFilms;
-      this._filterMenuComponent.update(this._activeFilterFilms);
-      const sortButtons = this._sortMenuComponent.getElement().querySelectorAll(`a`);
-
-      for (const button of sortButtons) {
-        if (button.textContent === `Sort by default`) {
-          button.classList.add(`sort__button--active`);
-        } else {
-          button.classList.remove(`sort__button--active`);
-        }
-      }
-
-      if (this._listFilms.length) {
-        this._removeCardFilms();
-        this._createCardFilms();
-
-      } else if (!this._noDataComponent) {
-        this._removeCardFilms();
-        this._renderNoData();
-      }
-    }
-  }
-
-  _filterClickHandler(evt) {
-    evt.preventDefault();
-
-    const target = evt.target;
-
-    const href = target.getAttribute(`href`);
-
-    switch (href) {
-      case `#all`:
-        this._activeFilterFilms = `#all`;
-        return this._filtersFilms(target, `all`);
-      case `#watchlist`:
-        this._activeFilterFilms = `#watchlist`;
-        return this._filtersFilms(target, `watchlist`);
-      case `#history`:
-        this._activeFilterFilms = `#history`;
-        return this._filtersFilms(target, `history`);
-      case `#favorites`:
-        this._activeFilterFilms = `#favorites`;
-        return this._filtersFilms(target, `favorites`);
-      case `#stats`:
-        return this._createStatistics();
-      default:
-        return null;
-    }
-  }
+  // _filtersFilms(target, list) {
+  //   if (this._statisticsComponent) {
+  //     this._renderListFilms();
+  //   }
+  //
+  //   if (!target.classList.contains(`main-navigation__item--active`)) {
+  //     this._filterListFilms = list !== `all` ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
+  //     this._listFilms = this._filterListFilms;
+  //     this._filterMenuComponent.update(this._activeFilterFilms);
+  //     const sortButtons = this._sortMenuComponent.getElement().querySelectorAll(`a`);
+  //
+  //     for (const button of sortButtons) {
+  //       if (button.textContent === `Sort by default`) {
+  //         button.classList.add(`sort__button--active`);
+  //       } else {
+  //         button.classList.remove(`sort__button--active`);
+  //       }
+  //     }
+  //
+  //     if (this._listFilms.length) {
+  //       this._removeCardFilms();
+  //       this._createCardFilms();
+  //
+  //     } else if (!this._noDataComponent) {
+  //       this._removeCardFilms();
+  //       this._renderNoData();
+  //     }
+  //   }
+  // }
+  //
+  // _filterClickHandler(evt) {
+  //   evt.preventDefault();
+  //
+  //   const target = evt.target;
+  //
+  //   const href = target.getAttribute(`href`);
+  //
+  //   switch (href) {
+  //     case `#all`:
+  //       this._activeFilterFilms = `#all`;
+  //       return this._filtersFilms(target, `all`);
+  //     case `#watchlist`:
+  //       this._activeFilterFilms = `#watchlist`;
+  //       return this._filtersFilms(target, `watchlist`);
+  //     case `#history`:
+  //       this._activeFilterFilms = `#history`;
+  //       return this._filtersFilms(target, `history`);
+  //     case `#favorites`:
+  //       this._activeFilterFilms = `#favorites`;
+  //       return this._filtersFilms(target, `favorites`);
+  //     case `#stats`:
+  //       return this._createStatistics();
+  //     default:
+  //       return null;
+  //   }
+  // }
 
   // _handleLoadMoreButtonClick() {
   //   const container = this._sectionFilmsComponent.getElement().querySelector(`[data-type-container="main"]`);
