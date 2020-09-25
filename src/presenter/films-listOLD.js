@@ -49,42 +49,42 @@ export default class MovieList {
     this._renderListFilms();
   }
 
-  _sortsFilms(target, element) {
-    if (!target.classList.contains(`sort__button--active`) && target.classList.contains(`sort__button`)) {
-      const activeSorting = this._sortMenuComponent.getElement().querySelector(`.sort__button--active`);
-
-      activeSorting.classList.remove(`sort__button--active`);
-      target.classList.add(`sort__button--active`);
-
-      if (this._listFilms.length) {
-        this._removeCardFilms();
-
-        this._listFilms = element ? sortElements(this._filterListFilms.slice(), element) : this._filterListFilms;
-
-        this._createCardFilms();
-      }
-    }
-  }
-
-  _sortClickHandler(evt) {
-    evt.preventDefault();
-
-    const target = evt.target;
-
-    switch (target.textContent) {
-      case `Sort by default`:
-        this._activeSortFilm = ``;
-        return this._sortsFilms(target);
-      case `Sort by date`:
-        this._activeSortFilm = `year`;
-        return this._sortsFilms(target, `year`);
-      case `Sort by rating`:
-        this._activeSortFilm = `rating`;
-        return this._sortsFilms(target, `rating`);
-      default:
-        return null;
-    }
-  }
+  // _sortsFilms(target, element) {
+  //   if (!target.classList.contains(`sort__button--active`) && target.classList.contains(`sort__button`)) {
+  //     const activeSorting = this._sortMenuComponent.getElement().querySelector(`.sort__button--active`);
+  //
+  //     activeSorting.classList.remove(`sort__button--active`);
+  //     target.classList.add(`sort__button--active`);
+  //
+  //     if (this._listFilms.length) {
+  //       this._removeCardFilms();
+  //
+  //       this._listFilms = element ? sortElements(this._filterListFilms.slice(), element) : this._filterListFilms;
+  //
+  //       this._createCardFilms();
+  //     }
+  //   }
+  // }
+  //
+  // _sortClickHandler(evt) {
+  //   evt.preventDefault();
+  //
+  //   const target = evt.target;
+  //
+  //   switch (target.textContent) {
+  //     case `Sort by default`:
+  //       this._activeSortFilm = ``;
+  //       return this._sortsFilms(target);
+  //     case `Sort by date`:
+  //       this._activeSortFilm = `year`;
+  //       return this._sortsFilms(target, `year`);
+  //     case `Sort by rating`:
+  //       this._activeSortFilm = `rating`;
+  //       return this._sortsFilms(target, `rating`);
+  //     default:
+  //       return null;
+  //   }
+  // }
 
   _filtersFilms(target, list) {
     if (this._statisticsComponent) {
@@ -337,17 +337,17 @@ export default class MovieList {
   //   }
   // }
 
-  _removeCardFilmsExtra() {
-    Object
-      .values(this._topRatedPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._topRatedPresenter = {};
-
-    Object
-      .values(this._mostCommentedPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._mostCommentedPresenter = {};
-  }
+  // _removeCardFilmsExtra() {
+  //   Object
+  //     .values(this._topRatedPresenter)
+  //     .forEach((presenter) => presenter.destroy());
+  //   this._topRatedPresenter = {};
+  //
+  //   Object
+  //     .values(this._mostCommentedPresenter)
+  //     .forEach((presenter) => presenter.destroy());
+  //   this._mostCommentedPresenter = {};
+  // }
 
   // _createCardFilms() {
   //   if (this._listFilms.length && this._noDataComponent) {
@@ -363,68 +363,68 @@ export default class MovieList {
   //   }
   // }
 
-  _removeCardFilms() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
-    this._renderedFilmsCount = FILM_CARD_COUNT;
-
-    if (this._loadMoreButtonComponent) {
-      remove(this._loadMoreButtonComponent);
-      this._loadMoreButtonComponent = null;
-    }
-  }
+  // _removeCardFilms() {
+  //   Object
+  //     .values(this._filmPresenter)
+  //     .forEach((presenter) => presenter.destroy());
+  //   this._filmPresenter = {};
+  //   this._renderedFilmsCount = FILM_CARD_COUNT;
+  //
+  //   if (this._loadMoreButtonComponent) {
+  //     remove(this._loadMoreButtonComponent);
+  //     this._loadMoreButtonComponent = null;
+  //   }
+  // }
   //  ==================================================================
-  _createdCardFilmsTopRated() {
-    const filmsTopRated = sortElements(this._sourcedlistFilms.slice(), `rating`).slice(0, 2);
-    const container = this._sectionFilmsComponent.getElement().querySelector(`[data-type-container="rated"]`);
-
-    filmsTopRated.forEach((film) => {
-      if (this._filmPresenter[film.id]) {
-        this._topRatedPresenter[film.id] = this._filmPresenter[film.id];
-        this._topRatedPresenter[film.id].renderFilm(container);
-        return;
-      }
-
-      this._renderCard(film, container, this._topRatedPresenter);
-    });
-  }
-  _createdMostCommentedRated() {
-
-  }
+  // _createdCardFilmsTopRated() {
+  //   const filmsTopRated = sortElements(this._sourcedlistFilms.slice(), `rating`).slice(0, 2);
+  //   const container = this._sectionFilmsComponent.getElement().querySelector(`[data-type-container="rated"]`);
+  //
+  //   filmsTopRated.forEach((film) => {
+  //     if (this._filmPresenter[film.id]) {
+  //       this._topRatedPresenter[film.id] = this._filmPresenter[film.id];
+  //       this._topRatedPresenter[film.id].renderFilm(container);
+  //       return;
+  //     }
+  //
+  //     this._renderCard(film, container, this._topRatedPresenter);
+  //   });
+  // }
+  // _createdMostCommentedRated() {
+  //
+  // }
   //  ==================================================================
-  _renderListFilms() {
-    if (!this._profileRatingComponent) {
-      this._renderProfileRating();
-    }
-
-    if (!this._listFilms.length) {
-      this._renderFilter();
-      this._renderSort();
-      this._renderNoData();
-      return;
-    }
-
-    if (this._noDataComponent) {
-      this._removeNoData();
-    }
-
-    if (!this._statisticsComponent) {
-      this._renderFilter();
-      this._renderSort();
-      this._renderSectionFilms();
-      this._createCardFilms();
-      this._createCardFilmsExtra();
-      return;
-    }
-
-    remove(this._statisticsComponent);
-    this._statisticsComponent = null;
-
-    this._renderSort();
-    this._renderSectionFilms();
-    this._createCardFilms();
-    this._createCardFilmsExtra();
-  }
-}
+//   _renderListFilms() {
+//     if (!this._profileRatingComponent) {
+//       this._renderProfileRating();
+//     }
+//
+//     if (!this._listFilms.length) {
+//       this._renderFilter();
+//       this._renderSort();
+//       this._renderNoData();
+//       return;
+//     }
+//
+//     if (this._noDataComponent) {
+//       this._removeNoData();
+//     }
+//
+//     if (!this._statisticsComponent) {
+//       this._renderFilter();
+//       this._renderSort();
+//       this._renderSectionFilms();
+//       this._createCardFilms();
+//       this._createCardFilmsExtra();
+//       return;
+//     }
+//
+//     remove(this._statisticsComponent);
+//     this._statisticsComponent = null;
+//
+//     this._renderSort();
+//     this._renderSectionFilms();
+//     this._createCardFilms();
+//     this._createCardFilmsExtra();
+//   }
+// }

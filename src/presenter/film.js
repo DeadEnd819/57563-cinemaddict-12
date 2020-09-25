@@ -22,4 +22,9 @@ export default class Popup {
 
     return this._filmCardComponent.getElement();
   }
+
+  destroy() {
+    // this._filmCardComponent.removeAddToListHandler(this._addToList);
+    remove(this._filmCardComponent);
+  }
 }
