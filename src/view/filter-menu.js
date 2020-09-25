@@ -11,7 +11,6 @@ const createFilterMenuTemplate = (films) => {
          <a href="#history" class="main-navigation__item" data-type="${FilterType.HISTORY}">History <span class="main-navigation__item-count">${filter(films, FilterType.HISTORY).length}</span></a>
          <a href="#favorites" class="main-navigation__item" data-type="${FilterType.FAVORITES}">Favorites <span class="main-navigation__item-count">${filter(films, FilterType.FAVORITES).length}</span></a>
        </div>
-       <a href="#stats" class="main-navigation__additional" data-type="${STATISTICS_BUTTON}">Stats</a>
     </nav>`
   );
 };

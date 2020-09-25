@@ -1,5 +1,5 @@
 import {humanizeReleaseDate} from "../utils/common.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 const createGenreTemplate = (genres) => {
   let genreList = [];
@@ -155,7 +155,7 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(film) {
     super();
 

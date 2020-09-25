@@ -3,11 +3,12 @@ import FilterMenuView from "../view/filter-menu.js";
 import SortMenuView from "../view/sort-menu.js";
 import SectionFilmsView from "../view/films.js";
 import NoDataView from "../view/no-data.js";
+import StatisticsButtonView from "../view/statistics-button.js";
 import StatisticsView from "../view/statistics.js";
 import ButtonView from "../view/button.js";
 import {filter} from "../utils/filter.js";
 import {render, remove, RenderPosition} from "../utils/render.js";
-import {FILM_CARD_COUNT, Containers, SortType, FilterType} from "../utils/const.js";
+import {FILM_CARD_COUNT, Containers, SortType, FilterType, STATISTICS_BUTTON} from "../utils/const.js";
 import {sortElements} from "../utils/sort.js";
 import FilmPresenter from "../presenter/film.js";
 
@@ -24,6 +25,7 @@ export default class MovieList {
     this._sectionFilmsComponent = new SectionFilmsView();
     this._filterMenuComponent = new FilterMenuView(this._sourcedlistFilms);
     this._sortMenuComponent = new SortMenuView();
+    this._statisticsButtonComponent = new StatisticsButtonView();
     this._loadMoreButtonComponent = null;
     this._profileRatingComponent = null;
     this._filterMenuComponent = null;
@@ -33,21 +35,28 @@ export default class MovieList {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._sortClickHandler = this._sortClickHandler.bind(this);
     this._filterClickHandler = this._filterClickHandler.bind(this);
+    this._statisticsButtonClickHandler = this._statisticsButtonClickHandler.bind(this);
     // this._onClickAddToList = this._onClickAddToList.bind(this);
   }
 
   init(films) {
     this._sourcedlistFilms = films.slice();
     this._listFilms = films.slice();
+    this._filterListFilms = films.slice();
     this._activeFilterFilms = FilterType.ALL;
     this._activeSortFilm = SortType.DEFAULT;
 
     this._renderProfileRating();
     this._renderFilter();
+    this._renderStatisticsButton();
     this._renderSort();
-    this._renderSectionFilms();
 
     this._renderMain();
+  }
+
+  _statisticsButtonClickHandler() {
+
+    this._createStatistics();
   }
 
   _handleLoadMoreButtonClick() {
@@ -64,11 +73,14 @@ export default class MovieList {
   }
 
   _filtersFilms(list) {
-    // if (this._statisticsComponent) {
-    //   this._renderListFilms();
-    // }
+    if (this._statisticsComponent) {
+      this._removeStatistics();
+      this._renderSort();
+      this._renderMain();
+    }
 
-    this._listFilms = list !== FilterType.ALL ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
+    this._filterListFilms = list !== FilterType.ALL ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
+    this._listFilms = this._filterListFilms;
     this._sortMenuComponent.resetActiveButton();
 
     if (this._listFilms.length) {
@@ -95,8 +107,6 @@ export default class MovieList {
       case FilterType.FAVORITES:
         this._activeFilterFilms = FilterType.FAVORITES;
         return this._filtersFilms(this._activeFilterFilms);
-      case `#stats`:
-        return this._createStatistics();
       default:
         return null;
     }
@@ -104,7 +114,7 @@ export default class MovieList {
 
   _sortsFilms(activeSort) {
     this._removeMainCardFilms();
-    this._listFilms = activeSort !== SortType.DEFAULT ? sortElements(this._listFilms.slice(), activeSort) : this._listFilms;
+    this._listFilms = activeSort !== SortType.DEFAULT ? sortElements(this._filterListFilms.slice(), activeSort) : this._filterListFilms;
     this._createMainCardFilms();
   }
 
@@ -165,6 +175,41 @@ export default class MovieList {
 
   _renderSectionFilms() {
     render(this._container, this._sectionFilmsComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderStatisticsButton() {
+    render(this._filterMenuComponent.getElement(), this._statisticsButtonComponent, RenderPosition.BEFOREEND);
+    this._statisticsButtonComponent.setClickHandler(this._statisticsButtonClickHandler);
+  }
+
+  _renderStatistics() {
+    render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
+  }
+
+  _createStatistics() {
+    if (!this._statisticsComponent) {
+      if (this._noDataComponent) {
+        this._removeNoData();
+      }
+
+      this._sortMenuComponent.removeClickHandler(this._sortClickHandler);
+
+      remove(this._sortMenuComponent);
+      remove(this._sectionFilmsComponent);
+
+      this._statisticsComponent = new StatisticsView();
+      this._renderStatistics();
+
+      // const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
+      //
+      // activeFilterButton.classList.remove(`main-navigation__item--active`);
+      // this._filterMenuComponent.getElement().querySelector(`.main-navigation__additional`).classList.add(`main-navigation__item--active`);
+    }
+  }
+
+  _removeStatistics() {
+    remove(this._statisticsComponent);
+    this._statisticsComponent = null;
   }
 
   _prepareListFilms(type) {
@@ -228,6 +273,13 @@ export default class MovieList {
     }
   }
 
+  _removeExtraCardFilms() {
+    Object
+      .values(this._filmPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenters = {};
+  }
+
   _createTopCardFilms() {
     const container = this._sectionFilmsComponent.getElement()
       .querySelector(`[data-type-container="${Containers.TOP}"]`);
@@ -246,6 +298,7 @@ export default class MovieList {
       return;
     }
 
+    this._renderSectionFilms();
     this._createMainCardFilms();
     this._createTopCardFilms();
     this._createCommentedCardFilms();

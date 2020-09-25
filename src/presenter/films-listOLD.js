@@ -235,33 +235,33 @@ export default class MovieList {
   //   this._noDataComponent = null;
   // }
 
-  _renderStatistics() {
-    render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
-  }
+  // _renderStatistics() {
+  //   render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
+  // }
 
-  _createStatistics() {
-    if (!this._statisticsComponent) {
-      this._sortMenuComponent.removeClickHandler(this._sortClickHandler);
-
-      this._removeCardFilms();
-      // this._removeCardFilmsExtra();
-
-      if (this._noDataComponent) {
-        this._removeNoData();
-      }
-
-      remove(this._sortMenuComponent);
-      remove(this._sectionFilmsComponent);
-
-      this._statisticsComponent = new StatisticsView();
-      this._renderStatistics();
-
-      const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
-
-      activeFilterButton.classList.remove(`main-navigation__item--active`);
-      this._filterMenuComponent.getElement().querySelector(`.main-navigation__additional`).classList.add(`main-navigation__item--active`);
-    }
-  }
+  // _createStatistics() {
+  //   if (!this._statisticsComponent) {
+  //     this._sortMenuComponent.removeClickHandler(this._sortClickHandler);
+  //
+  //     this._removeCardFilms();
+  //     // this._removeCardFilmsExtra();
+  //
+  //     if (this._noDataComponent) {
+  //       this._removeNoData();
+  //     }
+  //
+  //     remove(this._sortMenuComponent);
+  //     remove(this._sectionFilmsComponent);
+  //
+  //     this._statisticsComponent = new StatisticsView();
+  //     this._renderStatistics();
+  //
+  //     const activeFilterButton = this._filterMenuComponent.getElement().querySelector(`.main-navigation__item--active`);
+  //
+  //     activeFilterButton.classList.remove(`main-navigation__item--active`);
+  //     this._filterMenuComponent.getElement().querySelector(`.main-navigation__additional`).classList.add(`main-navigation__item--active`);
+  //   }
+  // }
 
   // _renderProfileRating() {
   //   this._profileRatingComponent = new ProfileRatingView(this._sourcedlistFilms);
