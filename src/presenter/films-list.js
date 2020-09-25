@@ -64,47 +64,40 @@ export default class MovieList {
     }
   }
 
-  _filtersFilms(target, list) {
-    if (this._statisticsComponent) {
-      this._renderListFilms();
-    }
+  _filtersFilms(list) {
+    // if (this._statisticsComponent) {
+    //   this._renderListFilms();
+    // }
 
-    if (!target.classList.contains(`main-navigation__item--active`)) {
-      this._filterListFilms = list !== `all` ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
-      this._listFilms = this._filterListFilms;
-      this._filterMenuComponent.update(this._activeFilterFilms);
+    this._filterListFilms = list !== FilterType.ALL ? filter(this._sourcedlistFilms, list) : this._sourcedlistFilms;
+    this._listFilms = this._filterListFilms;
 
-      this._sortMenuComponent.resetActiveButton();
+    this._sortMenuComponent.resetActiveButton();
 
-      if (this._listFilms.length) {
-        this._removeMainCardFilms();
-        this._createMainCardFilms();
+    if (this._listFilms.length) {
+      this._removeMainCardFilms();
+      this._createMainCardFilms();
 
-      } else if (!this._noDataComponent) {
-        this._removeMainCardFilms();
-        this._renderNoData();
-      }
+    } else if (!this._noDataComponent) {
+      this._removeMainCardFilms();
+      this._renderNoData();
     }
   }
 
-  _filterClickHandler(evt) {
-    const target = evt.target;
-
-    const href = target.getAttribute(`href`);
-
-    switch (href) {
-      case `#all`:
-        this._activeFilterFilms = `#all`;
-        return this._filtersFilms(target, `all`);
-      case `#watchlist`:
-        this._activeFilterFilms = `#watchlist`;
-        return this._filtersFilms(target, `watchlist`);
-      case `#history`:
-        this._activeFilterFilms = `#history`;
-        return this._filtersFilms(target, `history`);
-      case `#favorites`:
-        this._activeFilterFilms = `#favorites`;
-        return this._filtersFilms(target, `favorites`);
+  _filterClickHandler(type) {
+    switch (type) {
+      case FilterType.ALL:
+        this._activeFilterFilms = FilterType.ALL;
+        return this._filtersFilms(this._activeFilterFilms);
+      case FilterType.WATCHLIST:
+        this._activeFilterFilms = FilterType.WATCHLIST;
+        return this._filtersFilms(this._activeFilterFilms);
+      case FilterType.HISTORY:
+        this._activeFilterFilms = FilterType.HISTORY;
+        return this._filtersFilms(this._activeFilterFilms);
+      case FilterType.FAVORITES:
+        this._activeFilterFilms = FilterType.FAVORITES;
+        return this._filtersFilms(this._activeFilterFilms);
       case `#stats`:
         return this._createStatistics();
       default:

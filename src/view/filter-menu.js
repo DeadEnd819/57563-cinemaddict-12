@@ -1,5 +1,5 @@
 import {filter} from "../utils/filter.js";
-import {FilterType} from "../utils/const.js";
+import {FilterType, STATISTICS_BUTTON} from "../utils/const.js";
 import AbstractView from "./abstract.js";
 
 const createFilterMenuTemplate = (films) => {
@@ -11,7 +11,7 @@ const createFilterMenuTemplate = (films) => {
          <a href="#history" class="main-navigation__item" data-type="${FilterType.HISTORY}">History <span class="main-navigation__item-count">${filter(films, FilterType.HISTORY).length}</span></a>
          <a href="#favorites" class="main-navigation__item" data-type="${FilterType.FAVORITES}">Favorites <span class="main-navigation__item-count">${filter(films, FilterType.FAVORITES).length}</span></a>
        </div>
-       <a href="#stats" class="main-navigation__additional">Stats</a>
+       <a href="#stats" class="main-navigation__additional" data-type="${STATISTICS_BUTTON}">Stats</a>
     </nav>`
   );
 };
@@ -31,7 +31,17 @@ export default class FilterMenu extends AbstractView {
 
   _clickHandler(evt) {
     evt.preventDefault();
-    this._callback.click(evt);
+    const target = evt.target;
+
+    if (!target.classList.contains(`main-navigation__item--active`) && target.classList.contains(`main-navigation__item`)) {
+      const activeButton = this.getElement().querySelector(`.main-navigation__item--active`);
+
+      activeButton.classList.remove(`main-navigation__item--active`);
+      target.classList.add(`main-navigation__item--active`);
+
+      const type = target.dataset.type;
+      this._callback.click(type);
+    }
   }
 
   setClickHandler(callback) {
@@ -42,21 +52,5 @@ export default class FilterMenu extends AbstractView {
   removeClickHandler() {
     this.getElement().removeEventListener(`click`, this._clickHandler);
     this._callback = {};
-  }
-
-  update(activeFilter) {
-    this._activeFilter = activeFilter;
-    const activeFilterButton = this.getElement().querySelector(`.main-navigation__item--active`);
-    const filterNavigation = this.getElement().querySelectorAll(`.main-navigation__item`);
-
-    for (const item of filterNavigation) {
-      if (item.getAttribute(`href`) === activeFilter) {
-        if (!item.classList.contains(`.main-navigation__item--active`)) {
-          activeFilterButton.classList.remove(`main-navigation__item--active`);
-          item.classList.add(`main-navigation__item--active`);
-        }
-        break;
-      }
-    }
   }
 }

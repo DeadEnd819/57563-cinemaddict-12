@@ -1,4 +1,5 @@
 export const FILM_CARD_COUNT = 5;
+export const STATISTICS_BUTTON = 5;
 
 export const FilterType = {
   ALL: `All`,
