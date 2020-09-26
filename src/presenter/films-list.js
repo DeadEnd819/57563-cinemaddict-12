@@ -36,6 +36,7 @@ export default class MovieList {
     this._filterClickHandler = this._filterClickHandler.bind(this);
     this._statisticsButtonClickHandler = this._statisticsButtonClickHandler.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleResetPopup = this._handleResetPopup.bind(this);
   }
 
   init(films) {
@@ -53,10 +54,14 @@ export default class MovieList {
     this._renderMain();
   }
 
+
+  _handleResetPopup() {
+    Object
+      .values(this._filmPresenters)
+      .forEach((presenter) => presenter.removePopup());
+  }
+
   _handleFilmChange(updatedFilm, type) {
-    // console.log(updatedFilm);
-    // console.log(type);
-    // console.log(updatedFilm[type]);
     this._listFilms = updateItem(this._listFilms, updatedFilm);
     this._sourcedlistFilms = updateItem(this._sourcedlistFilms, updatedFilm);
     this._filmPresenters[updatedFilm.id].update(updatedFilm);
@@ -262,7 +267,7 @@ export default class MovieList {
     list
       .slice(from, to)
       .forEach((film) => {
-        const filmPresenter = new FilmPresenter(this._handleFilmChange);
+        const filmPresenter = new FilmPresenter(this._handleFilmChange, this._handleResetPopup);
 
         const card = filmPresenter.init(film);
         fragment.append(card);

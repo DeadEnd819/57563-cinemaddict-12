@@ -251,6 +251,21 @@ export default class Popup extends SmartView {
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
+  removeWatchlistClickHandler() {
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).removeEventListener(`click`, this._watchlistClickHandler);
+    this._callback.watchlistClick = null;
+  }
+
+  removeWatchedClickHandler() {
+    this.getElement().querySelector(`.film-details__control-label--watched`).removeEventListener(`click`, this._watchedClickHandler);
+    this._callback.watchedClick = null;
+  }
+
+  removeFavoriteClickHandler() {
+    this.getElement().querySelector(`.film-details__control-label--favorite`).removeEventListener(`click`, this._favoriteClickHandler);
+    this._callback.favoriteClick = null;
+  }
+
   static parseFilmToData(film) {
     return Object.assign(
         {},

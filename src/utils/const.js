@@ -27,3 +27,9 @@ export const Containers = {
   TOP: `Top`,
   COMMENTED: `commented`,
 };
+
+export const Buttons = {
+  MOUSE: 0,
+  ESCAPE: `Escape`,
+  ESC: `Esc`,
+};

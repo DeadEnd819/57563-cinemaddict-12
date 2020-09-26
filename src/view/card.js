@@ -46,7 +46,11 @@ export default class FilmCard extends AbstractView {
 
   _createPopupHandler(evt) {
     evt.preventDefault();
-    this._callback.createPopup(evt);
+    const targetClass = evt.target.classList;
+
+    if (targetClass.contains(`film-card__poster`) || targetClass.contains(`film-card__title`) || targetClass.contains(`film-card__comments`)) {
+      this._callback.createPopup(evt);
+    }
   }
 
   setCreatePopupHandler(callback) {
