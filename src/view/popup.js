@@ -2,6 +2,7 @@ import {humanizeReleaseDate} from "../utils/common.js";
 import SmartView from "./smart.js";
 import NewCommentView from "./new-comment.js";
 import {render, createElement, RenderPosition} from "../utils/render.js";
+import moment from "moment";
 
 const createGenreTemplate = (genres) => {
   let genreList = [];
@@ -21,7 +22,7 @@ const createCommentsTemplate = (comments) => {
       .replace(/png/gi, ``);
 
     const day = comment.day;
-    const timeComment = day.getFullYear() + `/` + day.getMonth() + `/` + day.getDate() + ` ` + day.getHours() + `:` + day.getMinutes();
+    const timeComment = moment(day).format(`Y/M/D h:mm`);
 
     commentsList.push(`<li class="film-details__comment">
               <span class="film-details__comment-emoji">
@@ -43,7 +44,8 @@ const createCommentsTemplate = (comments) => {
 
 const createPopupTemplate = (data) => {
   const {poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments, watchlist, history, favorites, id} = data;
-  const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
+  const filmDuration = humanizeReleaseDate(duration);
+  const release = moment(year).format(`D MMMM Y`);
 
   return `<section class="film-details" data-id="${id}">
             <form class="film-details__inner" action="" method="get">
@@ -85,7 +87,7 @@ const createPopupTemplate = (data) => {
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Release Date</td>
-                        <td class="film-details__cell">${humanizeReleaseDate(year)}</td>
+                        <td class="film-details__cell">${release}</td>
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Runtime</td>

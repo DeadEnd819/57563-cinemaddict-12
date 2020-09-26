@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -9,12 +11,8 @@ export const getRandomArbitrary = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
-export const humanizeReleaseDate = (releaseDate) => {
-  return [
-    releaseDate.toLocaleString(`en-US`, {day: `2-digit`}),
-    releaseDate.toLocaleString(`en-US`, {month: `long`}),
-    releaseDate.toLocaleString(`en-US`, {year: `numeric`}),
-  ].join(` `);
+export const humanizeReleaseDate = (date) => {
+  return `${moment(date).format(`h`)}h ${moment(date).format(`m`)}m`;
 };
 
 export const updateItem = (items, update) => {

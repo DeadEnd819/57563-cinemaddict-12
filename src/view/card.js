@@ -1,11 +1,13 @@
 import AbstractView from "./abstract.js";
+import {humanizeReleaseDate} from "../utils/common.js";
+import moment from "moment";
 
 const DESCRIPTION_TEXT_LENGTH = 140;
 
 const createFilmCardTemplate = (film) => {
   const {poster, title, rating, year, duration, genres, description, comments, watchlist, history, favorites, id} = film;
-  const filmYear = year.toLocaleString(`en-US`, {year: `numeric`});
-  const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
+  const filmYear = moment(year).format(`Y`);
+  const filmDuration = humanizeReleaseDate(duration);
   const filmGenres = genres.slice(0, 1);
   const filmDescription = description.length < DESCRIPTION_TEXT_LENGTH ? description : description.slice(0, DESCRIPTION_TEXT_LENGTH) + `...`;
 
