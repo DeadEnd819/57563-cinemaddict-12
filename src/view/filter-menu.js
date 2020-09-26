@@ -1,5 +1,5 @@
 import {filter} from "../utils/filter.js";
-import {FilterType, STATISTICS_BUTTON} from "../utils/const.js";
+import {FilterType} from "../utils/const.js";
 import AbstractView from "./abstract.js";
 
 const createFilterMenuTemplate = (films) => {
@@ -51,5 +51,10 @@ export default class FilterMenu extends AbstractView {
   removeClickHandler() {
     this.getElement().removeEventListener(`click`, this._clickHandler);
     this._callback = {};
+  }
+
+  update(data, type) {
+    const element = this.getElement().querySelector(`[data-type="${type}"]`).querySelector(`.main-navigation__item-count`);
+    element.textContent = filter(data.slice(), type).length;
   }
 }

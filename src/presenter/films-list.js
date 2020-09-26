@@ -6,6 +6,7 @@ import NoDataView from "../view/no-data.js";
 import StatisticsButtonView from "../view/statistics-button.js";
 import StatisticsView from "../view/statistics.js";
 import ButtonView from "../view/button.js";
+import {updateItem} from "../utils/common.js";
 import {filter} from "../utils/filter.js";
 import {render, remove, RenderPosition} from "../utils/render.js";
 import {FILM_CARD_COUNT, Containers, SortType, FilterType} from "../utils/const.js";
@@ -34,6 +35,7 @@ export default class MovieList {
     this._sortClickHandler = this._sortClickHandler.bind(this);
     this._filterClickHandler = this._filterClickHandler.bind(this);
     this._statisticsButtonClickHandler = this._statisticsButtonClickHandler.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
   init(films) {
@@ -49,6 +51,37 @@ export default class MovieList {
     this._renderSort();
 
     this._renderMain();
+  }
+
+  _handleFilmChange(updatedFilm, type) {
+    // console.log(updatedFilm);
+    // console.log(type);
+    // console.log(updatedFilm[type]);
+    this._listFilms = updateItem(this._listFilms, updatedFilm);
+    this._sourcedlistFilms = updateItem(this._sourcedlistFilms, updatedFilm);
+    this._filmPresenters[updatedFilm.id].update(updatedFilm);
+
+    this._filterMenuComponent.update(this._sourcedlistFilms, type);
+
+    if (this._activeFilterFilms !== FilterType.ALL) {
+      this._rerenderMainCads(type);
+    }
+  }
+
+  _rerenderMainCads(type) {
+    if (this._activeFilterFilms === type) {
+      this._filterListFilms = filter(this._sourcedlistFilms, type);
+      this._listFilms = this._filterListFilms;
+    }
+
+    this._removeMainCardFilms();
+
+    if (this._listFilms.length) {
+      this._createMainCardFilms();
+      return;
+    }
+
+    this._renderNoData();
   }
 
   _statisticsButtonClickHandler() {
@@ -132,7 +165,7 @@ export default class MovieList {
   }
 
   _renderNoData() {
-    const container = this._sectionFilmsComponent.getElement().querySelector(`[data-type-container="main"]`);
+    const container = this._sectionFilmsComponent.getElement().querySelector(`[data-type-container="${Containers.MAIN}"]`);
     this._noDataComponent = new NoDataView();
     render(container, this._noDataComponent, RenderPosition.AFTERBEGIN);
   }
@@ -229,7 +262,7 @@ export default class MovieList {
     list
       .slice(from, to)
       .forEach((film) => {
-        const filmPresenter = new FilmPresenter(this._onClickAddToList);
+        const filmPresenter = new FilmPresenter(this._handleFilmChange);
 
         const card = filmPresenter.init(film);
         fragment.append(card);

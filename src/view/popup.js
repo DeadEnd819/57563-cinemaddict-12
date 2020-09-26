@@ -39,8 +39,8 @@ const createCommentsTemplate = (comments) => {
   return commentsList.join(``);
 };
 
-const createPopupTemplate = (film) => {
-  const {poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments, watchlist, history, favorites, id} = film;
+const createPopupTemplate = (data) => {
+  const {poster, title, rating, year, duration, genres, description, country, ageRating, director, writers, actors, comments, watchlist, history, favorites, id} = data;
   const filmDuration = duration.getHours() + `h` + ` ` + duration.getMinutes() + `m`;
 
   return `<section class="film-details" data-id="${id}">
@@ -159,9 +159,12 @@ export default class Popup extends SmartView {
   constructor(film) {
     super();
 
-    this._film = film;
+    this._data = Popup.parseFilmToData(film);
+
     this._mouseDownHandler = this._mouseDownHandler.bind(this);
-    this._addToListHandler = this._addToListHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   setFilmButtonActive(list) {
@@ -170,7 +173,22 @@ export default class Popup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this.getElement()
+      .querySelector(`.film-details__close-btn`)
+      .addEventListener(`mousedown`, this._mouseDownHandler);
+    this.getElement()
+      .querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, this._watchlistClickHandler);
+    this.getElement()
+      .querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, this._watchedClickHandler);
+    this.getElement()
+      .querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, this._favoriteClickHandler);
   }
 
   _mouseDownHandler(evt) {
@@ -188,18 +206,65 @@ export default class Popup extends SmartView {
     this._callback = {};
   }
 
-  _addToListHandler(evt) {
+  _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.addToList(evt);
+
+    this.updateData({
+      watchlist: !this._data.watchlist,
+    });
+
+    this._callback.watchlistClick(Popup.parseDataToFilm(this._data));
   }
 
-  setAddToListHandler(callback) {
-    this._callback.addToList = callback;
-    this.getElement().querySelector(`.film-details__controls`).addEventListener(`click`, this._addToListHandler);
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      history: !this._data.history,
+    });
+
+    this._callback.watchedClick(Popup.parseDataToFilm(this._data));
   }
 
-  removeAddToListHandler() {
-    this.getElement().querySelector(`.film-details__controls`).removeEventListener(`click`, this._addToListHandler);
-    this._callback.addToList = null;
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      favorites: !this._data.favorites,
+    });
+
+    this._callback.favoriteClick(Popup.parseDataToFilm(this._data));
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._watchedClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  static parseFilmToData(film) {
+    return Object.assign(
+        {},
+        film,
+        {
+          watchlist: film.watchlist,
+          history: film.history,
+          favorites: film.favorites
+        }
+    );
+  }
+
+  static parseDataToFilm(data) {
+    data = Object.assign({}, data);
+    return data;
   }
 }

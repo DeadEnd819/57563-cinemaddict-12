@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {Containers, SortType} from "../utils/const.js";
+import {SortType} from "../utils/const.js";
 
 const createSortMenuTemplate = () => {
   return (
